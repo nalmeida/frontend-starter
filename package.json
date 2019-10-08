@@ -1,0 +1,59 @@
+{
+  "name": "gulp-browsersync-tailwind-starter",
+  "version": "1.0.0",
+  "description": "Gulp with Tailwind 1.1.2 + Browsersync + JS + Image",
+  "main": "gulpfile.js",
+  "scripts": {
+    "dev": "gulp",
+    "build": "gulp build"
+  },
+  "options": {
+    "config": {
+      "tailwindjs": "./tailwind.config.js"
+    },
+    "paths": {
+      "root": "./",
+      "src": {
+        "base": "./src",
+        "css": "./src/assets/css",
+        "js": "./src/assets/js",
+        "img": "./src/assets/img"
+      },
+      "dist": {
+        "base": "./dist",
+        "css": "./dist/assets/css",
+        "js": "./dist/assets/js",
+        "img": "./dist/assets/img"
+      },
+      "build": {
+        "base": "./build",
+        "css": "./build/assets/css",
+        "js": "./build/assets/js",
+        "img": "./build/assets/img"
+      }
+    }
+  },
+  "keywords": [
+    "gulp",
+    "tailwind",
+    "tailwindcss"
+  ],
+  "author": "Nicholas Almeida",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^9.3.1",
+    "browser-sync": "^2.26.7",
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-clean-css": "^4.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-imagemin": "^5.0.3",
+    "gulp-postcss": "^8.0.0",
+    "gulp-purgecss": "^1.1.1",
+    "gulp-replace": "^1.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-uglify": "^3.0.1",
+    "log-symbols": "^2.2.0",
+    "tailwindcss": "^1.1.2"
+  }
+}
