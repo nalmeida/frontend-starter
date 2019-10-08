@@ -41,18 +41,18 @@
   "author": "Nicholas Almeida",
   "license": "ISC",
   "devDependencies": {
-    "autoprefixer": "^9.3.1",
+    "autoprefixer": "^9.6.4",
     "browser-sync": "^2.26.7",
     "del": "^3.0.0",
-    "gulp": "^4.0.0",
-    "gulp-clean-css": "^4.0.0",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.2.0",
     "gulp-concat": "^2.6.1",
     "gulp-imagemin": "^5.0.3",
     "gulp-postcss": "^8.0.0",
-    "gulp-purgecss": "^1.1.1",
+    "gulp-purgecss": "^1.2.0",
     "gulp-replace": "^1.0.0",
     "gulp-sass": "^4.0.2",
-    "gulp-uglify": "^3.0.1",
+    "gulp-uglify": "^3.0.2",
     "log-symbols": "^2.2.0",
     "tailwindcss": "^1.1.2"
   }
