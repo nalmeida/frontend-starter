@@ -39,7 +39,7 @@ class TailwindExtractor {
 task('livepreview', (done) => {
 	browserSync.init({
 		server: {
-			baseDir: options.paths.dist.base
+			baseDir: options.paths.dev.base
 		},
 		port: 1234
 	});
@@ -59,7 +59,7 @@ task('dev-html', () => {
 		   //.pipe(replace('.jpg', '.webp'))
 		   //.pipe(replace('.png', '.webp'))
 		   //.pipe(replace('.jpeg','.webp'))
-		   .pipe(dest(options.paths.dist.base));
+		   .pipe(dest(options.paths.dev.base));
 });
 
 task('build-html', () => {
@@ -68,7 +68,7 @@ task('build-html', () => {
 		   //.pipe(replace('.jpg', '.webp'))
 		   //.pipe(replace('.png', '.webp'))
 		   //.pipe(replace('.jpeg','.webp'))
-		   .pipe(dest(options.paths.build.base));
+		   .pipe(dest(options.paths.prod.base));
 });
 
 //Compiling styles
@@ -81,12 +81,12 @@ task('dev-styles', ()=> {
 			require('autoprefixer'),
 		]))
 		.pipe(concat({ path: 'style.css'}))
-		.pipe(dest(options.paths.dist.css));
+		.pipe(dest(options.paths.dev.css));
 });
 
 //Compiling styles
 task('build-styles', ()=> {
-	return src(options.paths.dist.css + '/**/*')
+	return src(options.paths.dev.css + '/**/*')
 		.pipe(purgecss({
 			content: ["src/**/*.html","src/**/.*js"],
 			extractors: [{
@@ -95,7 +95,7 @@ task('build-styles', ()=> {
 			}]
 		}))
 		.pipe(cleanCSS({compatibility: 'ie8'}))
-		.pipe(dest(options.paths.build.css));
+		.pipe(dest(options.paths.prod.css));
 });
 
 //merging all script files to a single file
@@ -106,7 +106,7 @@ task('dev-scripts' ,()=> {
 			options.paths.src.js + '/**/*.js'
 		])
 		.pipe(concat({ path: 'scripts.js'}))
-		.pipe(dest(options.paths.dist.js));
+		.pipe(dest(options.paths.dev.js));
 });
 
 //merging all script files to a single file
@@ -117,14 +117,14 @@ task('build-scripts' ,()=> {
 		])
 		.pipe(concat({ path: 'scripts.js'}))
 		.pipe(uglify())
-		.pipe(dest(options.paths.build.js));
+		.pipe(dest(options.paths.prod.js));
 });
 
 task('dev-imgs', (done) =>{
 	src(options.paths.src.img + '/**/*')
 	//Note : Webp still not supported in majpr browsers including forefox
 	//.pipe(webp({ quality: 100 }))
-	.pipe(dest(options.paths.dist.img));
+	.pipe(dest(options.paths.dev.img));
 	done();
 });
 
@@ -133,7 +133,7 @@ task('build-imgs', (done) =>{
 	//Note : Webp still not supported in majpr browsers including forefox
 	//.pipe(webp({ quality: 100 }))
 	.pipe(imagemin())
-	.pipe(dest(options.paths.build.img));
+	.pipe(dest(options.paths.prod.img));
 	done();
 });
 

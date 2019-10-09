@@ -22,7 +22,7 @@ $ npm run dev
 ```
 3. To generate minifed files for production
 ```
-$ npm run build
+$ npm run prod
 ```
 
 ## How to include Google Fonts to your project

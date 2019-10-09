@@ -5,7 +5,7 @@
   "main": "gulpfile.js",
   "scripts": {
     "dev": "./node_modules/.bin/gulp",
-    "build": "./node_modules/.bin/gulp build"
+    "prod": "./node_modules/.bin/gulp build"
   },
   "options": {
     "config": {
@@ -19,17 +19,17 @@
         "js": "./src/assets/js",
         "img": "./src/assets/img"
       },
-      "dist": {
-        "base": "./dist",
-        "css": "./dist/assets/css",
-        "js": "./dist/assets/js",
-        "img": "./dist/assets/img"
+      "dev": {
+        "base": "./dev",
+        "css": "./dev/assets/css",
+        "js": "./dev/assets/js",
+        "img": "./dev/assets/img"
       },
-      "build": {
-        "base": "./build",
-        "css": "./build/assets/css",
-        "js": "./build/assets/js",
-        "img": "./build/assets/img"
+      "prod": {
+        "base": "./prod",
+        "css": "./prod/assets/css",
+        "js": "./prod/assets/js",
+        "img": "./prod/assets/img"
       }
     }
   },
