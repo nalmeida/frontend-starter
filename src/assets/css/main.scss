@@ -1,5 +1,13 @@
-//All styles can be added here.
+// TailwindCSS
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+//All styles can be added here.
 body {
 	background: #FEFEDE;
+}
+
+a {
+	@apply underline text-blue-700;
 }
