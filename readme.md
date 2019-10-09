@@ -2,6 +2,14 @@
 
 Gulp with TailwindCSS 1.1.2 Starter Kit - A repo which makes your development easier with predefined gulp tasks that help you to use [tailwindcss](https://github.com/tailwindcss/tailwindcss) with simple npm commands
 
+## Environment
+
+Testen on:
+
+* macOS High Sierra 10.13.6
+* Node v10.16.3
+* NPM 6.9.0
+
 ## Commands
 
 1. Install Dev Depedencies
