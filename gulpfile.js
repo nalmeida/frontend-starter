@@ -21,9 +21,6 @@ const uglify = require('gulp-uglify');//To Minify JS files
 const imagemin = require('gulp-imagemin'); //To Optimize Images
 const purgecss = require('gulp-purgecss'); //To Remove Unsued CSS
 const cleanCSS = require('gulp-clean-css');//To Minify CSS files
-//Note : Webp still not supported in majpr browsers including forefox
-//const webp = require('gulp-webp'); //For converting images to WebP format
-//const replace = require('gulp-replace'); //For Replacing img formats to webp in html
 const del = require('del'); //For Cleaning prod/dev for fresh export
 
 class TailwindExtractor {
@@ -52,19 +49,11 @@ function previewReload(done){
 
 task('dev-html', () => {
 	return src([options.paths.src.base + '/robots.txt', options.paths.src.base + '/**/*.html'])
-		   //Note : Webp still not supported in majpr browsers including forefox
-		   //.pipe(replace('.jpg', '.webp'))
-		   //.pipe(replace('.png', '.webp'))
-		   //.pipe(replace('.jpeg','.webp'))
 		   .pipe(dest(options.paths.dev.base));
 });
 
 task('prod-html', () => {
 	return src(options.paths.src.base+'/**/*.html')
-		   //Note : Webp still not supported in majpr browsers including forefox
-		   //.pipe(replace('.jpg', '.webp'))
-		   //.pipe(replace('.png', '.webp'))
-		   //.pipe(replace('.jpeg','.webp'))
 		   .pipe(dest(options.paths.prod.base));
 });
 
@@ -96,7 +85,6 @@ task('prod-styles', ()=> {
 });
 
 //merging all script files to a single file
-
 task('dev-scripts' ,()=> {
 	return src([
 			options.paths.src.js + '/vendor/**/*.js',
@@ -119,16 +107,12 @@ task('prod-scripts' ,()=> {
 
 task('dev-imgs', (done) =>{
 	src(options.paths.src.img + '/**/*')
-	//Note : Webp still not supported in majpr browsers including forefox
-	//.pipe(webp({ quality: 100 }))
 	.pipe(dest(options.paths.dev.img));
 	done();
 });
 
 task('prod-imgs', (done) =>{
 	src(options.paths.src.img + '/**/*')
-	//Note : Webp still not supported in majpr browsers including forefox
-	//.pipe(webp({ quality: 100 }))
 	.pipe(imagemin())
 	.pipe(dest(options.paths.prod.img));
 	done();
