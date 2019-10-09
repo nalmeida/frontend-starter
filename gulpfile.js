@@ -179,11 +179,11 @@ task('development', series('clean:dist','dev-html','dev-styles','dev-scripts','d
 	done();
 }));
 
-task('optamizedBuild', series('clean:build','build-html','dev-styles','build-styles','build-scripts','build-imgs',(done)=>{
+task('optimizedBuild', series('clean:build','build-html','dev-styles','build-styles','build-scripts','build-imgs',(done)=>{
 	console.log("\n\t" + logSymbols.info,"npm run build is complete. Files are located at ./build\n");
 	done();
 }));
 
 
 exports.default = series('development','livepreview','watch-changes');
-exports.build = series('optamizedBuild');
+exports.build = series('optimizedBuild');
