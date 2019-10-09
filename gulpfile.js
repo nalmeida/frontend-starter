@@ -10,7 +10,7 @@
 
 	2. npm run dev //To start development and server for live preview
 
-	3. npm run build //To generate minifed files for live server
+	3. npm run prod //To generate minifed files for live server
 */
 
 const { src, dest, task, watch, series } = require('gulp');
@@ -26,7 +26,7 @@ const cleanCSS = require('gulp-clean-css');//To Minify CSS files
 //Note : Webp still not supported in majpr browsers including forefox
 //const webp = require('gulp-webp'); //For converting images to WebP format
 //const replace = require('gulp-replace'); //For Replacing img formats to webp in html
-const del = require('del'); //For Cleaning build/dist for fresh export
+const del = require('del'); //For Cleaning prod/dev for fresh export
 const logSymbols = require('log-symbols'); //For Symbolic Console logs :) :P
 
 class TailwindExtractor {
@@ -62,7 +62,7 @@ task('dev-html', () => {
 		   .pipe(dest(options.paths.dev.base));
 });
 
-task('build-html', () => {
+task('prod-html', () => {
 	return src(options.paths.src.base+'/**/*.html')
 		   //Note : Webp still not supported in majpr browsers including forefox
 		   //.pipe(replace('.jpg', '.webp'))
@@ -85,7 +85,7 @@ task('dev-styles', ()=> {
 });
 
 //Compiling styles
-task('build-styles', ()=> {
+task('prod-styles', ()=> {
 	return src(options.paths.dev.css + '/**/*')
 		.pipe(purgecss({
 			content: ["src/**/*.html","src/**/.*js"],
@@ -110,7 +110,7 @@ task('dev-scripts' ,()=> {
 });
 
 //merging all script files to a single file
-task('build-scripts' ,()=> {
+task('prod-scripts' ,()=> {
 	return src([
 			options.paths.src.js + '/vendor/**/*.js',
 			options.paths.src.js + '/**/*.js'
@@ -128,7 +128,7 @@ task('dev-imgs', (done) =>{
 	done();
 });
 
-task('build-imgs', (done) =>{
+task('prod-imgs', (done) =>{
 	src(options.paths.src.img + '/**/*')
 	//Note : Webp still not supported in majpr browsers including forefox
 	//.pipe(webp({ quality: 100 }))
@@ -161,29 +161,29 @@ task('watch-changes', (done) => {
 	done();
 });
 
-//Cleaning dist folder for fresh start
-task('clean:dist', ()=> {
-	console.log("\n\t" + logSymbols.info,"Cleaning dist folder for fresh start.\n");
-	return del(['dist']);
+//Cleaning dev folder for fresh start
+task('clean:dev', ()=> {
+	console.log("\n\t" + logSymbols.info,"Cleaning dev folder for fresh start.\n");
+	return del(['dev']);
 });
 
-//Cleaning build folder for fresh start
-task('clean:build', ()=> {
-	console.log("\n\t" + logSymbols.info,"Cleaning build folder for fresh start.\n");
-	return del(['build']);
+//Cleaning prod folder for fresh start
+task('clean:prod', ()=> {
+	console.log("\n\t" + logSymbols.info,"Cleaning prod folder for fresh start.\n");
+	return del(['prod']);
 });
 
 //series of tasks to run on dev command
-task('development', series('clean:dist','dev-html','dev-styles','dev-scripts','dev-imgs',(done)=>{
-	console.log("\n\t" + logSymbols.info,"npm run dev is complete. Files are located at ./dist\n");
+task('development', series('clean:dev','dev-html','dev-styles','dev-scripts','dev-imgs',(done)=>{
+	console.log("\n\t" + logSymbols.info,"npm run dev is complete. Files are located at ./dev\n");
 	done();
 }));
 
-task('optimizedBuild', series('clean:build','build-html','dev-styles','build-styles','build-scripts','build-imgs',(done)=>{
-	console.log("\n\t" + logSymbols.info,"npm run build is complete. Files are located at ./build\n");
+task('optimizedProd', series('clean:prod','prod-html','dev-styles','prod-styles','prod-scripts','prod-imgs',(done)=>{
+	console.log("\n\t" + logSymbols.info,"npm run prod is complete. Files are located at ./prod\n");
 	done();
 }));
 
 
 exports.default = series('development','livepreview','watch-changes');
-exports.build = series('optimizedBuild');
+exports.build = series('optimizedProd');
