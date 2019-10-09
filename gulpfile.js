@@ -7,9 +7,7 @@
 	=======================================================================
 
 	1. npm install //To install all dev dependencies of package
-
 	2. npm run dev //To start development and server for live preview
-
 	3. npm run prod //To generate minifed files for live server
 */
 
@@ -27,7 +25,6 @@ const cleanCSS = require('gulp-clean-css');//To Minify CSS files
 //const webp = require('gulp-webp'); //For converting images to WebP format
 //const replace = require('gulp-replace'); //For Replacing img formats to webp in html
 const del = require('del'); //For Cleaning prod/dev for fresh export
-const logSymbols = require('log-symbols'); //For Symbolic Console logs :) :P
 
 class TailwindExtractor {
   static extract(content) {
@@ -48,7 +45,7 @@ task('livepreview', (done) => {
 
 //Reload functions which triggers browser reload
 function previewReload(done){
-	console.log("\n\t" + logSymbols.info,"Reloading Preview.\n");
+	console.log('\n\t → Reloading Preview.\n');
 	browserSync.reload();
 	done();
 }
@@ -63,7 +60,7 @@ task('dev-html', () => {
 });
 
 task('prod-html', () => {
-	return src([options.paths.src.base + '/robots.txt', options.paths.src.base + '/**/*.html'])
+	return src(options.paths.src.base+'/**/*.html')
 		   //Note : Webp still not supported in majpr browsers including forefox
 		   //.pipe(replace('.jpg', '.webp'))
 		   //.pipe(replace('.png', '.webp'))
@@ -88,7 +85,7 @@ task('dev-styles', ()=> {
 task('prod-styles', ()=> {
 	return src(options.paths.dev.css + '/**/*')
 		.pipe(purgecss({
-			content: ["src/robots.txt", "src/**/*.html","src/**/.*js"],
+			content: ['src/robots.txt', 'src/**/*.html', 'src/**/.*js'],
 			extractors: [{
 				extractor: TailwindExtractor,
 				extensions: ['html']
@@ -142,7 +139,7 @@ task('prod-imgs', (done) =>{
 task('watch-changes', (done) => {
 
 	//Watching HTML Files edits
-	watch(options.config.tailwindjs,series('dev-styles',previewReload));
+	watch(options.config.tailwindjs, series('dev-styles',previewReload));
 
 	//Watching HTML Files edits
 	watch(options.paths.src.base+'/**/*.html',series('dev-styles','dev-html',previewReload));
@@ -156,34 +153,34 @@ task('watch-changes', (done) => {
 	//Watching Img Files updates
 	watch(options.paths.src.img+'/**/*',series('dev-imgs',previewReload));
 
-	console.log("\n\t" + logSymbols.info,"Watching for Changes made to files.\n");
+	console.log('\n\t → Watching for Changes made to files.\n');
 
 	done();
 });
 
 //Cleaning dev folder for fresh start
 task('clean:dev', ()=> {
-	console.log("\n\t" + logSymbols.info,"Cleaning dev folder for fresh start.\n");
+	console.log('\n\t → Cleaning dev folder for fresh start.\n ');
 	return del(['dev']);
 });
 
 //Cleaning prod folder for fresh start
 task('clean:prod', ()=> {
-	console.log("\n\t" + logSymbols.info,"Cleaning prod folder for fresh start.\n");
+	console.log('\n\t → Cleaning prod folder for fresh start.\n ');
 	return del(['prod']);
 });
 
 //series of tasks to run on dev command
 task('development', series('clean:dev','dev-html','dev-styles','dev-scripts','dev-imgs',(done)=>{
-	console.log("\n\t" + logSymbols.info,"npm run dev is complete. Files are located at ./dev\n");
+	console.log('\n\t → npm run dev is complete. Files are located at ./dev\n ');
 	done();
 }));
 
 task('optimizedProd', series('clean:prod','prod-html','dev-styles','prod-styles','prod-scripts','prod-imgs',(done)=>{
-	console.log("\n\t" + logSymbols.info,"npm run prod is complete. Files are located at ./prod\n");
+	console.log('\n\t → npm run prod is complete. Files are located at ./prod\n ');
 	done();
 }));
 
 
-exports.default = series('development','livepreview','watch-changes');
+exports.default = series('development', 'livepreview', 'watch-changes');
 exports.build = series('optimizedProd');
