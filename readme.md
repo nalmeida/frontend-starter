@@ -4,7 +4,7 @@ Gulp with TailwindCSS 1.1.2 Starter Kit - A repo which makes your development ea
 
 ## Environment
 
-Testen on:
+Tested on:
 
 * macOS High Sierra 10.13.6
 * Node v10.16.3
