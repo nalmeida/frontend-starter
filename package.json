@@ -4,8 +4,8 @@
   "description": "Gulp with Tailwind 1.1.2 + Browsersync + JS + Image",
   "main": "gulpfile.js",
   "scripts": {
-    "dev": "gulp",
-    "build": "gulp build"
+    "dev": "./node_modules/.bin/gulp",
+    "build": "./node_modules/.bin/gulp build"
   },
   "options": {
     "config": {
