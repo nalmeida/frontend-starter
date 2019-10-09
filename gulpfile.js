@@ -45,7 +45,7 @@ task('livepreview', (done) => {
 
 //Reload functions which triggers browser reload
 function previewReload(done){
-	console.log('\n\t → Reloading Preview.\n');
+	console.log('\n\t ℹ️  Reloading Preview.\n');
 	browserSync.reload();
 	done();
 }
@@ -153,31 +153,31 @@ task('watch-changes', (done) => {
 	//Watching Img Files updates
 	watch(options.paths.src.img+'/**/*',series('dev-imgs',previewReload));
 
-	console.log('\n\t → Watching for Changes made to files.\n');
+	console.log('\n\t ℹ️  Watching for Changes made to files.\n');
 
 	done();
 });
 
 //Cleaning dev folder for fresh start
 task('clean:dev', ()=> {
-	console.log('\n\t → Cleaning dev folder for fresh start.\n ');
+	console.log('\n\t ℹ️  Cleaning dev folder for fresh start.\n ');
 	return del(['dev']);
 });
 
 //Cleaning prod folder for fresh start
 task('clean:prod', ()=> {
-	console.log('\n\t → Cleaning prod folder for fresh start.\n ');
+	console.log('\n\t ℹ️  Cleaning prod folder for fresh start.\n ');
 	return del(['prod']);
 });
 
 //series of tasks to run on dev command
 task('development', series('clean:dev','dev-html','dev-styles','dev-scripts','dev-imgs',(done)=>{
-	console.log('\n\t → npm run dev is complete. Files are located at ./dev\n ');
+	console.log('\n\t ℹ️  npm run dev is complete. Files are located at ./dev\n ');
 	done();
 }));
 
 task('optimizedProd', series('clean:prod','prod-html','dev-styles','prod-styles','prod-scripts','prod-imgs',(done)=>{
-	console.log('\n\t → npm run prod is complete. Files are located at ./prod\n ');
+	console.log('\n\t ℹ️  npm run prod is complete. Files are located at ./prod\n ');
 	done();
 }));
 
