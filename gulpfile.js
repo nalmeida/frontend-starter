@@ -54,7 +54,7 @@ function previewReload(done){
 }
 
 task('dev-html', () => {
-	return src(options.paths.src.base+'/**/*.html')
+	return src([options.paths.src.base + '/robots.txt', options.paths.src.base + '/**/*.html'])
 		   //Note : Webp still not supported in majpr browsers including forefox
 		   //.pipe(replace('.jpg', '.webp'))
 		   //.pipe(replace('.png', '.webp'))
@@ -63,7 +63,7 @@ task('dev-html', () => {
 });
 
 task('prod-html', () => {
-	return src(options.paths.src.base+'/**/*.html')
+	return src([options.paths.src.base + '/robots.txt', options.paths.src.base + '/**/*.html'])
 		   //Note : Webp still not supported in majpr browsers including forefox
 		   //.pipe(replace('.jpg', '.webp'))
 		   //.pipe(replace('.png', '.webp'))
@@ -88,7 +88,7 @@ task('dev-styles', ()=> {
 task('prod-styles', ()=> {
 	return src(options.paths.dev.css + '/**/*')
 		.pipe(purgecss({
-			content: ["src/**/*.html","src/**/.*js"],
+			content: ["src/robots.txt", "src/**/*.html","src/**/.*js"],
 			extractors: [{
 				extractor: TailwindExtractor,
 				extensions: ['html']
