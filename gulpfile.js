@@ -24,9 +24,9 @@ const cleanCSS = require('gulp-clean-css');//To Minify CSS files
 const del = require('del'); //For Cleaning prod/dev for fresh export
 
 class TailwindExtractor {
-  static extract(content) {
-	return content.match(/[A-Za-z0-9-_:\/]+/g) || [];
-  }
+	static extract(content) {
+		return content.match(/[A-Za-z0-9-_:\/]+/g) || [];
+	}
 }
 
 //Load Previews on Browser on dev
@@ -54,7 +54,7 @@ task('dev-html', () => {
 
 task('prod-html', () => {
 	return src(options.paths.src.base+'/**/*.html')
-		   .pipe(dest(options.paths.prod.base));
+		.pipe(dest(options.paths.prod.base));
 });
 
 //Compiling styles
