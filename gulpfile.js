@@ -24,9 +24,12 @@ const cleanCSS = require('gulp-clean-css');//To Minify CSS files
 const del = require('del'); //For Cleaning prod/dev for fresh export
 const template = require('gulp-template');
 const tailwindcss = require('tailwindcss');
+const sitemap = require('gulp-sitemap');
+
 
 const srcFolder = options.paths.src.folder;
 const devFolder = options.paths.dev.folder;
+const prodFolder = options.paths.prod.folder;
 const devUrls = {
 	url: options.paths.dev.url,
 	imgUrl: options.paths.dev.imgUrl
@@ -60,6 +63,26 @@ function previewReload(done){
 	done();
 }
 
+task('dev-sitemap', () => {
+	return src(srcFolder + '/**/*.html', {
+			read: false
+		})
+		.pipe(sitemap({
+			siteUrl: devUrls.url
+		}))
+		.pipe(dest(devFolder));
+});
+
+task('prod-sitemap', () => {
+	return src(srcFolder + '/**/*.html', {
+			read: false
+		})
+		.pipe(sitemap({
+			siteUrl: 'http:' + prodUrls.url
+		}))
+		.pipe(dest(prodFolder));
+});
+
 task('dev-html', () => {
 	return src([srcFolder + '/robots.txt', srcFolder + '/**/*.html'])
 		.pipe(template(devUrls))
@@ -69,7 +92,7 @@ task('dev-html', () => {
 task('prod-html', () => {
 	return src([srcFolder + '/robots.txt', srcFolder + '/**/*.html'])
 		.pipe(template(prodUrls))
-		.pipe(dest(options.paths.prod.folder));
+		.pipe(dest(prodFolder));
 });
 
 //Compiling styles
@@ -103,7 +126,7 @@ task('prod-styles', ()=> {
 			}]
 		}))
 		.pipe(cleanCSS({compatibility: 'ie8'}))
-		.pipe(dest(options.paths.prod.folder + '/assets/css'));
+		.pipe(dest(prodFolder + '/assets/css'));
 });
 
 //merging all script files to a single file
@@ -126,7 +149,7 @@ task('prod-scripts' ,()=> {
 		.pipe(template(prodUrls))
 		.pipe(concat({ path: 'scripts.js'}))
 		.pipe(uglify())
-		.pipe(dest(options.paths.prod.folder + '/assets/js'));
+		.pipe(dest(prodFolder + '/assets/js'));
 });
 
 task('dev-imgs', (done) =>{
@@ -138,7 +161,7 @@ task('dev-imgs', (done) =>{
 task('prod-imgs', (done) =>{
 	src(srcFolder + '/assets/img/**/*')
 	.pipe(imagemin())
-	.pipe(dest(options.paths.prod.folder + '/assets/img'));
+	.pipe(dest(prodFolder + '/assets/img'));
 	done();
 });
 
@@ -179,12 +202,12 @@ task('clean:prod', ()=> {
 });
 
 //series of tasks to run on dev command
-task('development', series('clean:dev','dev-html','dev-styles','dev-scripts','dev-imgs',(done)=>{
+task('development', series('clean:dev', 'dev-sitemap', 'dev-html','dev-styles','dev-scripts','dev-imgs',(done)=>{
 	console.log('\nℹ️  npm run dev is complete. Files are located at ./dev\n ');
 	done();
 }));
 
-task('optimizedProd', series('clean:prod','prod-html','prod-styles','prod-scripts','prod-imgs',(done)=>{
+task('optimizedProd', series('clean:prod', 'prod-sitemap', 'prod-html','prod-styles','prod-scripts','prod-imgs',(done)=>{
 	console.log('\nℹ️  npm run prod is complete. Files are located at ./prod\n ');
 	done();
 }));
