@@ -1,57 +1,52 @@
 {
-  "name": "gulp-browsersync-tailwind-starter",
-  "version": "1.0.0",
-  "description": "Gulp with Tailwind 1.1.2 + Browsersync + JS + Image",
-  "main": "gulpfile.js",
-  "scripts": {
-    "dev": "./node_modules/.bin/gulp",
-    "prod": "./node_modules/.bin/gulp build"
-  },
-  "options": {
-    "config": {
-      "tailwindjs": "./tailwind.config.js"
-    },
-    "paths": {
-      "root": "./",
-      "src": {
-        "base": "./src",
-        "css": "./src/assets/css",
-        "js": "./src/assets/js",
-        "img": "./src/assets/img"
-      },
-      "dev": {
-        "base": "./dev",
-        "css": "./dev/assets/css",
-        "js": "./dev/assets/js",
-        "img": "./dev/assets/img"
-      },
-      "prod": {
-        "base": "./prod",
-        "css": "./prod/assets/css",
-        "js": "./prod/assets/js",
-        "img": "./prod/assets/img"
-      }
-    }
-  },
-  "keywords": [
-    "gulp",
-    "tailwind",
-    "tailwindcss"
-  ],
-  "author": "Nicholas Almeida",
-  "license": "ISC",
-  "devDependencies": {
-    "autoprefixer": "^9.6.4",
-    "browser-sync": "^2.26.7",
-    "del": "^3.0.0",
-    "gulp": "^4.0.2",
-    "gulp-clean-css": "^4.2.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-imagemin": "^5.0.3",
-    "gulp-postcss": "^8.0.0",
-    "gulp-purgecss": "^1.2.0",
-    "gulp-sass": "^4.0.2",
-    "gulp-uglify": "^3.0.2",
-    "tailwindcss": "^1.1.2"
-  }
+	"name": "frontend-starter",
+	"version": "1.0.0",
+	"description": "Front-end Starter using Gulp + Tailwind 1.1.2 + Browsersync + JS + Image",
+	"main": "gulpfile.js",
+	"scripts": {
+		"dev": "./node_modules/.bin/gulp",
+		"prod": "./node_modules/.bin/gulp build"
+	},
+	"options": {
+		"config": {
+			"tailwindjs": "./tailwind.config.js"
+		},
+		"paths": {
+			"src": {
+				"folder": "./src"
+			},
+			"dev": {
+				"folder": "./dev",
+				"url": "//localhost:1234",
+				"imgUrl": "//localhost:1234"
+			},
+			"prod": {
+				"folder": "./prod",
+				"url": "//www.yoursite.com",
+				"imgUrl": "//www.yoursite.com"
+			}
+		}
+	},
+	"keywords": [
+		"gulp",
+		"tailwind",
+		"tailwindcss"
+	],
+	"author": "Nicholas Almeida",
+	"license": "ISC",
+	"devDependencies": {
+		"autoprefixer": "^9.6.4",
+		"browser-sync": "^2.26.7",
+		"del": "^3.0.0",
+		"gulp": "^4.0.2",
+		"gulp-clean-css": "^4.2.0",
+		"gulp-concat": "^2.6.1",
+		"gulp-imagemin": "^5.0.3",
+		"gulp-postcss": "^8.0.0",
+		"gulp-purgecss": "^1.2.0",
+		"gulp-sass": "^4.0.2",
+		"gulp-template": "^5.0.0",
+		"gulp-uglify": "^3.0.2",
+		"tailwindcss": "^1.1.2"
+	}
 }

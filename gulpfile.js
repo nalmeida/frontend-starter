@@ -22,6 +22,19 @@ const imagemin = require('gulp-imagemin'); //To Optimize Images
 const purgecss = require('gulp-purgecss'); //To Remove Unsued CSS
 const cleanCSS = require('gulp-clean-css');//To Minify CSS files
 const del = require('del'); //For Cleaning prod/dev for fresh export
+const template = require('gulp-template');
+const tailwindcss = require('tailwindcss');
+
+const srcFolder = options.paths.src.folder;
+const devFolder = options.paths.dev.folder;
+const devUrls = {
+	url: options.paths.dev.url,
+	imgUrl: options.paths.dev.imgUrl
+};
+const prodUrls = {
+	url: options.paths.prod.url,
+	imgUrl: options.paths.prod.imgUrl
+};
 
 class TailwindExtractor {
 	static extract(content) {
@@ -33,7 +46,7 @@ class TailwindExtractor {
 task('livepreview', (done) => {
 	browserSync.init({
 		server: {
-			baseDir: options.paths.dev.base
+			baseDir: devFolder
 		},
 		port: 1234
 	});
@@ -42,79 +55,90 @@ task('livepreview', (done) => {
 
 //Reload functions which triggers browser reload
 function previewReload(done){
-	console.log('\n\t ℹ️  Reloading Preview.\n');
+	console.log('\nℹ️  Reloading Preview.\n');
 	browserSync.reload();
 	done();
 }
 
 task('dev-html', () => {
-	return src([options.paths.src.base + '/robots.txt', options.paths.src.base + '/**/*.html'])
-		   .pipe(dest(options.paths.dev.base));
+	return src([srcFolder + '/robots.txt', srcFolder + '/**/*.html'])
+		.pipe(template(devUrls))
+		.pipe(dest(devFolder));
 });
 
 task('prod-html', () => {
-	return src(options.paths.src.base+'/**/*.html')
-		.pipe(dest(options.paths.prod.base));
+	return src([srcFolder + '/robots.txt', srcFolder + '/**/*.html'])
+		.pipe(template(prodUrls))
+		.pipe(dest(options.paths.prod.folder));
 });
 
 //Compiling styles
 task('dev-styles', ()=> {
-	var tailwindcss = require('tailwindcss');
-	return src(options.paths.src.css + '/**/*')
+	return src(srcFolder + '/assets/css/**/*')
+		.pipe(template(devUrls))
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss([
 			tailwindcss(options.config.tailwindjs),
 			require('autoprefixer'),
 		]))
 		.pipe(concat({ path: 'style.css'}))
-		.pipe(dest(options.paths.dev.css));
+		.pipe(dest(devFolder + '/assets/css/'));
 });
 
 //Compiling styles
 task('prod-styles', ()=> {
-	return src(options.paths.dev.css + '/**/*')
+	return src(srcFolder + '/assets/css/**/*')
+		.pipe(template(prodUrls))
+		.pipe(sass().on('error', sass.logError))
+		.pipe(postcss([
+			tailwindcss(options.config.tailwindjs),
+			require('autoprefixer'),
+		]))
+		.pipe(concat({ path: 'style.css'}))
 		.pipe(purgecss({
-			content: ['src/robots.txt', 'src/**/*.html', 'src/**/.*js'],
+			content: ['src/**/*.html', 'src/**/.*js'],
 			extractors: [{
 				extractor: TailwindExtractor,
 				extensions: ['html']
 			}]
 		}))
 		.pipe(cleanCSS({compatibility: 'ie8'}))
-		.pipe(dest(options.paths.prod.css));
+		.pipe(dest(options.paths.prod.folder + '/assets/css'));
 });
 
 //merging all script files to a single file
 task('dev-scripts' ,()=> {
 	return src([
-			options.paths.src.js + '/vendor/**/*.js',
-			options.paths.src.js + '/**/*.js'
+			srcFolder + '/assets/js/vendor/**/*.js',
+			srcFolder + '/assets/js/**/*.js'
 		])
+		.pipe(template(devUrls))
 		.pipe(concat({ path: 'scripts.js'}))
-		.pipe(dest(options.paths.dev.js));
+		.pipe(dest(devFolder + '/assets/js'));
 });
 
 //merging all script files to a single file
 task('prod-scripts' ,()=> {
 	return src([
-			options.paths.src.js + '/vendor/**/*.js',
-			options.paths.src.js + '/**/*.js'
+		srcFolder + '/assets/js/vendor/**/*.js',
+		srcFolder + '/assets/js/**/*.js'
 		])
+		.pipe(template(prodUrls))
 		.pipe(concat({ path: 'scripts.js'}))
 		.pipe(uglify())
-		.pipe(dest(options.paths.prod.js));
+		.pipe(dest(options.paths.prod.folder + '/assets/js'));
 });
 
 task('dev-imgs', (done) =>{
-	src(options.paths.src.img + '/**/*')
-	.pipe(dest(options.paths.dev.img));
+	src(srcFolder + '/assets/img/**/*')
+	.pipe(dest(devFolder + '/assets/img'));
 	done();
 });
 
 task('prod-imgs', (done) =>{
-	src(options.paths.src.img + '/**/*')
+	src(srcFolder + '/assets/img/**/*')
 	.pipe(imagemin())
-	.pipe(dest(options.paths.prod.img));
+	.pipe(dest(options.paths.prod.folder + '/assets/img'));
 	done();
 });
 
@@ -123,45 +147,45 @@ task('prod-imgs', (done) =>{
 task('watch-changes', (done) => {
 
 	//Watching HTML Files edits
-	watch(options.config.tailwindjs, series('dev-styles',previewReload));
+	watch(options.config.tailwindjs, series('dev-styles', previewReload));
 
 	//Watching HTML Files edits
-	watch(options.paths.src.base+'/**/*.html',series('dev-styles','dev-html',previewReload));
+	watch(srcFolder + '/**/*.html', series('dev-styles','dev-html', previewReload));
 
 	//Watching css Files edits
-	watch(options.paths.src.css+'/**/*',series('dev-styles',previewReload));
+	watch(srcFolder + '/assets/css/**/*', series('dev-styles', previewReload));
 
 	//Watching JS Files edits
-	watch(options.paths.src.js+'/**/*.js',series('dev-scripts',previewReload));
+	watch(srcFolder + '/assets/js/**/*.js', series('dev-scripts', previewReload));
 
 	//Watching Img Files updates
-	watch(options.paths.src.img+'/**/*',series('dev-imgs',previewReload));
+	watch(srcFolder+'/assets/img/**/*', series('dev-imgs', previewReload));
 
-	console.log('\n\t ℹ️  Watching for Changes made to files.\n');
+	console.log('\nℹ️  Watching for Changes made to files.\n');
 
 	done();
 });
 
 //Cleaning dev folder for fresh start
 task('clean:dev', ()=> {
-	console.log('\n\t ℹ️  Cleaning dev folder for fresh start.\n ');
+	console.log('\nℹ️  Cleaning dev folder for fresh start.\n ');
 	return del(['dev']);
 });
 
 //Cleaning prod folder for fresh start
 task('clean:prod', ()=> {
-	console.log('\n\t ℹ️  Cleaning prod folder for fresh start.\n ');
+	console.log('\nℹ️  Cleaning prod folder for fresh start.\n ');
 	return del(['prod']);
 });
 
 //series of tasks to run on dev command
 task('development', series('clean:dev','dev-html','dev-styles','dev-scripts','dev-imgs',(done)=>{
-	console.log('\n\t ℹ️  npm run dev is complete. Files are located at ./dev\n ');
+	console.log('\nℹ️  npm run dev is complete. Files are located at ./dev\n ');
 	done();
 }));
 
-task('optimizedProd', series('clean:prod','prod-html','dev-styles','prod-styles','prod-scripts','prod-imgs',(done)=>{
-	console.log('\n\t ℹ️  npm run prod is complete. Files are located at ./prod\n ');
+task('optimizedProd', series('clean:prod','prod-html','prod-styles','prod-scripts','prod-imgs',(done)=>{
+	console.log('\nℹ️  npm run prod is complete. Files are located at ./prod\n ');
 	done();
 }));
 
