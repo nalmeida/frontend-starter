@@ -1,16 +1,3 @@
-/*=====================================================================*/
-/*                  Gulp with Tailwind Utility framework               */
-/*=====================================================================*/
-
-/*
-	Usage ::
-	=======================================================================
-
-	1. npm install //To install all dev dependencies of package
-	2. npm run dev //To start development and server for live preview
-	3. npm run prod //To generate minifed files for live server
-*/
-
 const { src, dest, task, watch, series } = require('gulp');
 const options = require('./package.json').options; //Options : paths and other options from package.json
 const browserSync = require('browser-sync').create();
@@ -22,21 +9,29 @@ const imagemin = require('gulp-imagemin'); //To Optimize Images
 const purgecss = require('gulp-purgecss'); //To Remove Unsued CSS
 const cleanCSS = require('gulp-clean-css');//To Minify CSS files
 const del = require('del'); //For Cleaning prod/dev for fresh export
-const template = require('gulp-template');
 const tailwindcss = require('tailwindcss');
 const sitemap = require('gulp-sitemap');
+const include = require('gulp-file-include');
 
+// const rename = require("gulp-rename");
 
-const srcFolder = options.paths.src.folder;
 const devFolder = options.paths.dev.folder;
 const prodFolder = options.paths.prod.folder;
-const devUrls = {
-	url: options.paths.dev.url,
-	imgUrl: options.paths.dev.imgUrl
+const includeDevObj = {
+	prefix: '@@',
+	basepath: '@file',
+	context: {
+		url: options.paths.dev.url,
+		img: options.paths.dev.imgUrl
+	}
 };
-const prodUrls = {
-	url: options.paths.prod.url,
-	imgUrl: options.paths.prod.imgUrl
+const includeProdObj = {
+	prefix: '@@',
+	basepath: '@file',
+	context: {
+		url: options.paths.prod.url,
+		img: options.paths.prod.imgUrl
+	}
 };
 
 class TailwindExtractor {
@@ -51,6 +46,7 @@ task('livepreview', (done) => {
 		server: {
 			baseDir: devFolder
 		},
+		open: false,
 		port: 1234
 	});
 	done();
@@ -64,41 +60,55 @@ function previewReload(done){
 }
 
 task('dev-sitemap', () => {
-	return src(srcFolder + '/**/*.html', {
+	return src([
+		'./src/**/*.html',
+		'!./src/include/**/*'
+		], {
 			read: false
 		})
 		.pipe(sitemap({
-			siteUrl: devUrls.url
+			siteUrl: includeDevObj.context.url
 		}))
 		.pipe(dest(devFolder));
 });
 
 task('prod-sitemap', () => {
-	return src(srcFolder + '/**/*.html', {
+	return src([
+		'./src/**/*.html',
+		'!./src/include/**/*'
+		], {
 			read: false
 		})
 		.pipe(sitemap({
-			siteUrl: 'http:' + prodUrls.url
+			siteUrl: 'http:' + includeProdObj.context.url
 		}))
 		.pipe(dest(prodFolder));
-});
+});``
 
 task('dev-html', () => {
-	return src([srcFolder + '/robots.txt', srcFolder + '/**/*.html'])
-		.pipe(template(devUrls))
-		.pipe(dest(devFolder));
+	return src([
+		'./src/robots.txt',
+		'./src/**/*.html',
+		'!./src/include/**/*'
+	])
+	.pipe(include(includeDevObj))
+	.pipe(dest(devFolder));
 });
 
 task('prod-html', () => {
-	return src([srcFolder + '/robots.txt', srcFolder + '/**/*.html'])
-		.pipe(template(prodUrls))
-		.pipe(dest(prodFolder));
+	return src([
+		'./src/robots.txt',
+		'./src/**/*.html',
+		'!./src/include/**/*'
+	])
+	.pipe(include(includeProdObj))
+	.pipe(dest(prodFolder));
 });
 
 //Compiling styles
 task('dev-styles', ()=> {
-	return src(srcFolder + '/assets/css/**/*')
-		.pipe(template(devUrls))
+	return src('./src/assets/css/**/*')
+		.pipe(include(includeDevObj))
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss([
 			tailwindcss(options.config.tailwindjs),
@@ -110,8 +120,8 @@ task('dev-styles', ()=> {
 
 //Compiling styles
 task('prod-styles', ()=> {
-	return src(srcFolder + '/assets/css/**/*')
-		.pipe(template(prodUrls))
+	return src('./src/assets/css/**/*')
+		.pipe(include(includeProdObj))
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss([
 			tailwindcss(options.config.tailwindjs),
@@ -126,16 +136,17 @@ task('prod-styles', ()=> {
 			}]
 		}))
 		.pipe(cleanCSS({compatibility: 'ie8'}))
+		// .pipe(rename({ suffix: '.min' }))
 		.pipe(dest(prodFolder + '/assets/css'));
 });
 
 //merging all script files to a single file
 task('dev-scripts' ,()=> {
 	return src([
-			srcFolder + '/assets/js/vendor/**/*.js',
-			srcFolder + '/assets/js/**/*.js'
+			'./src/assets/js/vendor/**/*.js',
+			'./src/assets/js/**/*.js'
 		])
-		.pipe(template(devUrls))
+		.pipe(include(includeDevObj))
 		.pipe(concat({ path: 'scripts.js'}))
 		.pipe(dest(devFolder + '/assets/js'));
 });
@@ -143,23 +154,24 @@ task('dev-scripts' ,()=> {
 //merging all script files to a single file
 task('prod-scripts' ,()=> {
 	return src([
-		srcFolder + '/assets/js/vendor/**/*.js',
-		srcFolder + '/assets/js/**/*.js'
-		])
-		.pipe(template(prodUrls))
+		'./src/assets/js/vendor/**/*.js',
+		'./src/assets/js/**/*.js'
+	])
+		.pipe(include(includeProdObj))
 		.pipe(concat({ path: 'scripts.js'}))
 		.pipe(uglify())
+		// .pipe(rename({ suffix: '.min' }))
 		.pipe(dest(prodFolder + '/assets/js'));
 });
 
 task('dev-imgs', (done) =>{
-	src(srcFolder + '/assets/img/**/*')
+	src('./src/assets/img/**/*')
 	.pipe(dest(devFolder + '/assets/img'));
 	done();
 });
 
 task('prod-imgs', (done) =>{
-	src(srcFolder + '/assets/img/**/*')
+	src('./src/assets/img/**/*')
 	.pipe(imagemin())
 	.pipe(dest(prodFolder + '/assets/img'));
 	done();
@@ -173,16 +185,16 @@ task('watch-changes', (done) => {
 	watch(options.config.tailwindjs, series('dev-styles', previewReload));
 
 	//Watching HTML Files edits
-	watch(srcFolder + '/**/*.html', series('dev-styles','dev-html', previewReload));
+	watch('./src/**/*.html', series('dev-styles','dev-html', previewReload));
 
 	//Watching css Files edits
-	watch(srcFolder + '/assets/css/**/*', series('dev-styles', previewReload));
+	watch('./src/assets/css/**/*', series('dev-styles', previewReload));
 
 	//Watching JS Files edits
-	watch(srcFolder + '/assets/js/**/*.js', series('dev-scripts', previewReload));
+	watch('./src/assets/js/**/*.js', series('dev-scripts', previewReload));
 
 	//Watching Img Files updates
-	watch(srcFolder+'/assets/img/**/*', series('dev-imgs', previewReload));
+	watch('./src/assets/img/**/*', series('dev-imgs', previewReload));
 
 	console.log('\nℹ️  Watching for Changes made to files.\n');
 
@@ -211,7 +223,6 @@ task('optimizedProd', series('clean:prod', 'prod-sitemap', 'prod-html','prod-sty
 	console.log('\nℹ️  npm run prod is complete. Files are located at ./prod\n ');
 	done();
 }));
-
 
 exports.default = series('development', 'livepreview', 'watch-changes');
 exports.build = series('optimizedProd');

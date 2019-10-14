@@ -1,4 +1,4 @@
 // main.js file
 // Global vars
-var url = '<%= url %>';
-var imgUrl = '<%= imgUrl %>';
+var url = '@@url';
+var img = '@@img';
