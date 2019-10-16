@@ -14,9 +14,6 @@ const sitemap = require('gulp-sitemap');
 const include = require('gulp-file-include');
 const md5 = require("gulp-md5-assets");
 
-
-// const rename = require("gulp-rename");
-
 const devFolder = options.paths.dev.folder;
 const prodFolder = options.paths.prod.folder;
 const includeDevObj = {
@@ -138,7 +135,6 @@ task('prod-styles', ()=> {
 			}]
 		}))
 		.pipe(cleanCSS({compatibility: 'ie8'}))
-		// .pipe(rename({ suffix: '.min' }))
 		.pipe(md5(10, prodFolder + '/**/*.html'))
 		.pipe(dest(prodFolder + '/assets/css'));
 });
@@ -163,7 +159,6 @@ task('prod-scripts' ,()=> {
 		.pipe(include(includeProdObj))
 		.pipe(concat({ path: 'scripts.js'}))
 		.pipe(uglify())
-		// .pipe(rename({ suffix: '.min' }))
 		.pipe(md5(10, prodFolder + '/**/*.html'))
 		.pipe(dest(prodFolder + '/assets/js'));
 });
