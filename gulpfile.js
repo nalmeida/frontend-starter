@@ -12,6 +12,8 @@ const del = require('del'); //For Cleaning prod/dev for fresh export
 const tailwindcss = require('tailwindcss');
 const sitemap = require('gulp-sitemap');
 const include = require('gulp-file-include');
+const md5 = require("gulp-md5-assets");
+
 
 // const rename = require("gulp-rename");
 
@@ -137,6 +139,7 @@ task('prod-styles', ()=> {
 		}))
 		.pipe(cleanCSS({compatibility: 'ie8'}))
 		// .pipe(rename({ suffix: '.min' }))
+		.pipe(md5(10, prodFolder + '/**/*.html'))
 		.pipe(dest(prodFolder + '/assets/css'));
 });
 
@@ -161,19 +164,22 @@ task('prod-scripts' ,()=> {
 		.pipe(concat({ path: 'scripts.js'}))
 		.pipe(uglify())
 		// .pipe(rename({ suffix: '.min' }))
+		.pipe(md5(10, prodFolder + '/**/*.html'))
 		.pipe(dest(prodFolder + '/assets/js'));
 });
 
 task('dev-imgs', (done) =>{
 	src('./src/assets/img/**/*')
-	.pipe(dest(devFolder + '/assets/img'));
+		.pipe(dest(devFolder + '/assets/img'));
 	done();
 });
 
 task('prod-imgs', (done) =>{
 	src('./src/assets/img/**/*')
-	.pipe(imagemin())
-	.pipe(dest(prodFolder + '/assets/img'));
+		.pipe(imagemin())
+		.pipe(md5(10, prodFolder + '/assets/css/**/*.css'))
+		.pipe(md5(10, prodFolder + '/**/*.html'))
+		.pipe(dest(prodFolder + '/assets/img'));
 	done();
 });
 
